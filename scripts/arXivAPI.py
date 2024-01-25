@@ -7,7 +7,10 @@ import re
 def basicArXivCall(subject, max_results=10):
     #path = "C:/Users/wyett/OneDrive/Documents/INFO5871/"
     endpoint = "http://export.arxiv.org/api/query?"
-    url = endpoint+"search_query=all:"+subject+f"&sortBy=submittedDate&sortOrder=descending&max_results={max_results+1}"
+    subject = subject.replace(" ", "+")
+    print(subject)
+    url = endpoint+"search_query=all:"+subject #+ f"&classification-physics_archives=nucl-ex&max_results={max_results+1}"
+    print(url)
     try:
         requests.get(url)
     except requests.ConnectionError as e:
@@ -33,7 +36,7 @@ def basicArXivCall(subject, max_results=10):
             df['summary'] = df['summary'].apply(lambda x: str(x).replace('\n',' '))
             df['summary'] = df['summary'].apply(lambda x: str(x).replace('\t',' '))
             print(df.columns)
-            print(df.info)
+            print(df.title.values)
 
             #df.to_csv(path+'/arXiv_AI.txt',sep = '\t',index = False)
 
@@ -41,7 +44,7 @@ def basicArXivCall(subject, max_results=10):
 
 
 def main():
-    basicArXivCall('nulcear')
+    basicArXivCall('nuclear energy')
 
 
 if __name__ == "__main__":
