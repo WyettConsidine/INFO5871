@@ -48,11 +48,11 @@ def writeToFile(contList, subject):
 
 def main():
     print('WebScraping Start')
-    subject = 'nuclear energy'
+    subject = '\"Nuclear Energy\" safe'
     api_key, endpoint = newsAPI.getArticleURLsParams()
     urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
     cont = urlsToTxt(urls, 20)
-    #writeToFile(cont, subject)
+    writeToFile(cont, subject.replace('\"',''))
     print(cont)
     #content=urlToText('https://www.wired.com/story/global-emissions-could-peak-sooner-than-you-think/')
 

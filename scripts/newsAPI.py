@@ -163,9 +163,10 @@ def articleDescToCSV(descList, subject):
 #////////////////////////////////////
 
 def main():
-    subject = 'nuclear energy'
-    # descList = getArticleDesc(api_key, endpointEverything, 'Nuclear Energy')
-    # articleDescToCSV(descList, subject)
+    subject = '\"Nuclear Energy\" risk'
+    # descList = getArticleDesc(api_key, endpointEverything, subject)
+    # print(descList)
+    # articleDescToCSV(descList, subject.replace('\"', ''))
     print(getArticleURLs(api_key, endpointEverything, subject))
 
 
