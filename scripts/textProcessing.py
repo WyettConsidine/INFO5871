@@ -56,10 +56,15 @@ def articleCorpusVectorizer(FolderDir, stemORlem = {'stemmer', 'lemmer', 'neithe
     return countVecDF, vectorizer
 
 
-def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsAPI', 'scraped'}, stemORlem = {'stemmer', 'lemmer', 'neither'}, max_df=1, min_df=1):
+def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsAPI', 'scraped'}, stemORlem = {'stemmer', 'lemmer', 'neither'}, label = False, max_df=1, min_df=1):
     if inputOrigin == 'arXiv':
         contentDF = pd.read_csv (filePath)
         content = contentDF['summary'].values[1:]
+        if label:
+            print(contentDF['Label'].values[1:])
+            content = list(zip(contentDF['Label'].values[1:], content))
+            content = [str(item[0])+','+str(item[1]) for item in content]
+            print(content)
     elif inputOrigin == 'newsAPI':
         with open(filePath) as file:
             content = [line.strip() for line in file]
@@ -69,6 +74,12 @@ def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsA
     else:
         print("enter valid input origin")
         return None    
+    
+    if label:
+        labels = [line.split(',', 1)[0] for line in content]
+        #print(labels)
+        content = [line.split(',', 1)[1] for line in content]
+        #print(content)
 
     if stemORlem == 'lemmer':
         LEMMER = WordNetLemmatizer()
@@ -112,6 +123,9 @@ def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsA
         if any(char.isdigit() for char in word)| (len(word) <= 2):
             countVecDF= countVecDF.drop(columns= [word],)
                
+    if label:
+        countVecDF.insert(0, 'Label', labels, True)
+
     print(len(countVecDF.columns))
     
     return countVecDF, vectorizer
@@ -134,7 +148,8 @@ def textProcessor(filepath,
                    textType={'content', 'corpus'},
                    contentOrigin = {'arXiv', 'newsAPI', 'scraped'}, 
                    stemORlem = {'stemmer', 'lemmer'}, 
-                   countORtfidf = {'count', 'tfidf'}, maxFeatures = 30, max_df=1, min_df=1  ):
+                   labeled = False,
+                   countORtfidf = {'count', 'tfidf'}, maxFeatures = 30, max_df=1, min_df=1):
     if textType == 'content':
         output, vectorizer = contentVectorizer(filepath,maxFeatures,contentOrigin,stemORlem,max_df,min_df)
     elif textType == 'corpus':
@@ -157,14 +172,14 @@ def main():
     # outputArtCorpus, _ = textProcessor('./resourceFiles/corpus1(manual)', textType='corpus', countORtfidf='count', stemORlem='lemmer')
     # print(outputArtCorpus)
 
-    # outputarXiv, _ = textProcessor('./resourceFiles/corpus2(arXiv)/arXivData(query=nuclear energy)2024-01-30.csv', textType='content', contentOrigin= 'arXiv', stemORlem='stemmer', maxFeatures=20)
-    # print(outputarXiv)
+    outputarXiv, _ = textProcessor('resourceFiles\\corpus2(arXiv)\\arXivDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'arXiv', labeled = True, stemORlem='stemmer', maxFeatures=20, max_df=7, min_df=4)
+    print(outputarXiv)
 
-    # outputNewsAPI, _ = textProcessor('./resourceFiles/corpus3(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', textType='content', contentOrigin= 'newsAPI', stemORlem='lemmer', maxFeatures=20)
+    # outputNewsAPI, _ = textProcessor('resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'newsAPI', labeled = True, stemORlem='lemmer', maxFeatures=20, max_df=7, min_df =10)
     # print(outputNewsAPI)
 
-    outputScrape, _ = textProcessor('./resourceFiles/corpus4(bs4)/webScraped(query=nuclear energy)2024-02-06.csv', textType='content', contentOrigin= 'scraped', stemORlem='stemmer', maxFeatures=20, max_df = 5, min_df = 2)
-    print(outputScrape)
+    # outputScrape, _ = textProcessor('resourceFiles\corpus4(bs4)\webScrapedLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'scraped', stemORlem='lemmer', labeled=True, maxFeatures=20, max_df = 5, min_df = 4)
+    # print(outputScrape)
 
 
     # outputSt, dirVectorizer = articleCorpusVectorizer('./resourceFiles/corpus1(manual)', stemORlem='stemmer')

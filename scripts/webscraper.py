@@ -37,6 +37,19 @@ def strip_ascii(text):
         if 31 < ord(char) < 127
     )
 
+def joinLabeledData(filePath1, l1, filePath2, l2, newFilePath):
+    with (open(filePath1, 'r')) as f1:
+        lines1 = [[l1, line.strip()] for line in f1]
+        f1.close()
+    with (open(filePath2, 'r')) as f2:
+        lines2 = [[l2, line.strip()] for line in f2]
+        f2.close()
+    fullLines = lines1 + lines2
+    with(open(newFilePath, 'w')) as newF:
+        for line in fullLines:
+            newF.write(line[0] + "," + line[1] + "\n")
+    
+
 def writeToFile(contList, subject):
     today = date.today()
     with open(f'./resourceFiles/corpus4(bs4)/webScraped(query={subject}){today}.csv', 'a') as f:
@@ -47,13 +60,16 @@ def writeToFile(contList, subject):
 
 
 def main():
-    print('WebScraping Start')
-    subject = '\"Nuclear Energy\" safe'
-    api_key, endpoint = newsAPI.getArticleURLsParams()
-    urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
-    cont = urlsToTxt(urls, 20)
-    writeToFile(cont, subject.replace('\"',''))
-    print(cont)
+    # print('WebScraping Start')
+    # subject = '\"Nuclear Energy\" safe'
+    # api_key, endpoint = newsAPI.getArticleURLsParams()
+    # urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
+    # cont = urlsToTxt(urls, 20)
+    # writeToFile(cont, subject.replace('\"',''))
+    # print(cont)
+    joinLabeledData('resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy risk)2024-02-08.csv', 'risk',
+                    'resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy safe)2024-02-08.csv', 'safe',
+                     'resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)')
     #content=urlToText('https://www.wired.com/story/global-emissions-could-peak-sooner-than-you-think/')
 
     #content2 = urlToText('https://www.androidcentral.com/phones/betavolt-technology-developing-radionuclide-battery')

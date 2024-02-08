@@ -34,7 +34,10 @@ def basicArXivCall(subject, label, max_results=50):
                     dictionary = {}
                 if tag in ['title','summary','primary_category']:
                     print(tag)
-                    dictionary[tag] = child.text
+                    txt = child.text
+                    if txt is not None:
+                        txt = txt.replace(',','')
+                    dictionary[tag] = txt
 
             print(entries)        
             df = pd.DataFrame(entries)
@@ -42,8 +45,6 @@ def basicArXivCall(subject, label, max_results=50):
             df['summary'] = df['summary'].apply(lambda x: str(x).replace('\n',' '))
             df['summary'] = df['summary'].apply(lambda x: str(x).replace('\t',' '))
             #df['label'] = label
-            print(df.columns)
-            print(df.title.values)
             return df
             #df.to_csv(path+'/arXiv_AI.txt',sep = '\t',index = False)
 
@@ -53,11 +54,26 @@ def loadIntoFile(summaryDF, subject, label):
     today = date.today()
     summaryDF.to_csv(f'./resourceFiles/corpus2(arXiv)/arXivData(query={subject + " " +label}){today}.csv', index=False) 
 
-def main():
-    subject = '\"nuclear energy\"'
-    datadf = basicArXivCall(subject, 'safe')
-    loadIntoFile(datadf, subject.replace('\"',''), 'safe')
+def joinLabeledData(filePath1, l1, filePath2, l2, newFilePath):
+    contentDF = pd.read_csv(filePath1)
+    contentDF['Label'] = l1
 
+    contentDF2 = pd.read_csv(filePath2)
+    contentDF2['Label'] = l2
+
+       
+    frames = [contentDF, contentDF2]
+    totalContent = pd.concat(frames)
+    totalContent.to_csv(newFilePath, index=True)
+
+def main():
+    #  subject = '\"nuclear energy\"'
+    #  datadf = basicArXivCall(subject, 'risk')
+    #  loadIntoFile(datadf, subject.replace('\"',''), 'risk')
+
+    joinLabeledData('resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy risk)2024-02-08.csv', 'risk',
+                    'resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy safe)2024-02-08.csv', 'safe',
+                    'resourceFiles\\corpus3(newsAPI)\\arXivDataLabeled(query=Nuclear Energy).csv')
 
 if __name__ == "__main__":
     main()
