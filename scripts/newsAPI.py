@@ -110,6 +110,8 @@ def getArticleURLsFromSources(sourceList, key, endpoint, subject, numArticlesPer
     #articleURLS.append([art['url'] for art in json['articles']])
     return articleURLS  
 
+def getArticleURLsParams():
+    return api_key, endpointEverything
 
 def getArticleURLs(key, endpoint,subject, numArticles = 50):
     articleURLS = []
@@ -162,8 +164,9 @@ def articleDescToCSV(descList, subject):
 
 def main():
     subject = 'nuclear energy'
-    descList = getArticleDesc(api_key, endpointEverything, 'Nuclear Energy')
-    articleDescToCSV(descList, subject)
+    # descList = getArticleDesc(api_key, endpointEverything, 'Nuclear Energy')
+    # articleDescToCSV(descList, subject)
+    print(getArticleURLs(api_key, endpointEverything, subject))
 
 
 if __name__ == "__main__":
