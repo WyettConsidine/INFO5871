@@ -169,36 +169,36 @@ def textProcessor(filepath,
 
 def main():
     print('Text Processing Start')
-    # outputArtCorpus, _ = textProcessor('./resourceFiles/corpus1(manual)', textType='corpus', countORtfidf='count', stemORlem='lemmer')
+    # outputArtCorpus, _ = textProcessor('./Assignment1/resourceFiles/corpus1(manual)', textType='corpus', countORtfidf='count', stemORlem='lemmer')
     # print(outputArtCorpus)
 
-    outputarXiv, _ = textProcessor('resourceFiles\\corpus2(arXiv)\\arXivDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'arXiv', labeled = True, stemORlem='stemmer', maxFeatures=20, max_df=7, min_df=4)
+    outputarXiv, _ = textProcessor('Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'arXiv', labeled = True, stemORlem='stemmer', maxFeatures=20, max_df=7, min_df=4)
     print(outputarXiv)
 
-    # outputNewsAPI, _ = textProcessor('resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'newsAPI', labeled = True, stemORlem='lemmer', maxFeatures=20, max_df=7, min_df =10)
+    # outputNewsAPI, _ = textProcessor('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'newsAPI', labeled = True, stemORlem='lemmer', maxFeatures=20, max_df=7, min_df =10)
     # print(outputNewsAPI)
 
     # outputScrape, _ = textProcessor('resourceFiles\corpus4(bs4)\webScrapedLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'scraped', stemORlem='lemmer', labeled=True, maxFeatures=20, max_df = 5, min_df = 4)
     # print(outputScrape)
 
 
-    # outputSt, dirVectorizer = articleCorpusVectorizer('./resourceFiles/corpus1(manual)', stemORlem='stemmer')
-    # outputL, dirVectorizer = articleCorpusVectorizer('./resourceFiles/corpus1(manual)', stemORlem='lemmer')
+    # outputSt, dirVectorizer = articleCorpusVectorizer('./Assignment1/resourceFiles/corpus1(manual)', stemORlem='stemmer')
+    # outputL, dirVectorizer = articleCorpusVectorizer('./Assignment1/resourceFiles/corpus1(manual)', stemORlem='lemmer')
     # print(outputSt.columns)
     # print(outputL.columns)
 
     
-    # output2St, contVectorizer = contentVectorizer('./resourceFiles/corpus2(arXiv)/arXivData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'arXiv', stemORlem='stemmer')
-    # output2L, contVectorizer = contentVectorizer('./resourceFiles/corpus2(arXiv)/arXivData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'arXiv', stemORlem='lemmer')
+    # output2St, contVectorizer = contentVectorizer('./Assignment1/resourceFiles/corpus2(arXiv)/arXivData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'arXiv', stemORlem='stemmer')
+    # output2L, contVectorizer = contentVectorizer('./Assignment1/resourceFiles/corpus2(arXiv)/arXivData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'arXiv', stemORlem='lemmer')
     # print(output2St.columns)
     # print(output2L.columns)
 
-    # output3St, contVectorizer = contentVectorizer('./resourceFiles/corpus3(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'newsAPI', stemORlem='stemmer')
-    # output3L, contVectorizer = contentVectorizer('./resourceFiles/corpus3(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'newsAPI', stemORlem='lemmer')
+    # output3St, contVectorizer = contentVectorizer('./Assignment1/resourceFiles/corpus3(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'newsAPI', stemORlem='stemmer')
+    # output3L, contVectorizer = contentVectorizer('./Assignment1/resourceFiles/corpus3(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'newsAPI', stemORlem='lemmer')
     # print(output3St.columns)
     # print(output3L.columns)
 
-    # output = ArticleTfidfVectorizer('./resourceFiles/corpus1(manual)')
+    # output = ArticleTfidfVectorizer('./Assignment1/resourceFiles/corpus1(manual)')
     # print(output)
 
 if __name__ == "__main__":

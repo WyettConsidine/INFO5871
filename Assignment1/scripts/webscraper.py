@@ -52,7 +52,7 @@ def joinLabeledData(filePath1, l1, filePath2, l2, newFilePath):
 
 def writeToFile(contList, subject):
     today = date.today()
-    with open(f'./resourceFiles/corpus4(bs4)/webScraped(query={subject}){today}.csv', 'a') as f:
+    with open(f'./Assignment1/resourceFiles/corpus4(bs4)/webScraped(query={subject}){today}.csv', 'a') as f:
         for line in contList:
             f.write(f"{strip_ascii(line)}\n") 
     return 'Complete'
@@ -60,16 +60,22 @@ def writeToFile(contList, subject):
 
 
 def main():
-    # print('WebScraping Start')
-    # subject = '\"Nuclear Energy\" safe'
-    # api_key, endpoint = newsAPI.getArticleURLsParams()
-    # urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
-    # cont = urlsToTxt(urls, 20)
-    # writeToFile(cont, subject.replace('\"',''))
+    print('WebScraping Start')
+    subject = '\"Nuclear Energy\" sustainable'
+    api_key, endpoint = newsAPI.getArticleURLsParams()
+    urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
+    cont = urlsToTxt(urls, 20)
+    writeToFile(cont, subject.replace('\"',''))
+
+    subject = '\"Nuclear Energy\" unsustainable'
+    api_key, endpoint = newsAPI.getArticleURLsParams()
+    urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
+    cont = urlsToTxt(urls, 20)
+    writeToFile(cont, subject.replace('\"',''))
     # print(cont)
-    joinLabeledData('resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy risk)2024-02-08.csv', 'risk',
-                    'resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy safe)2024-02-08.csv', 'safe',
-                     'resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)')
+    joinLabeledData('Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy sustainable)2024-02-08.csv', 'sustainable',
+                    'Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy unsustainable)2024-02-08.csv', 'unsustainble',
+                     'Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability')
     #content=urlToText('https://www.wired.com/story/global-emissions-could-peak-sooner-than-you-think/')
 
     #content2 = urlToText('https://www.androidcentral.com/phones/betavolt-technology-developing-radionuclide-battery')

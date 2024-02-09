@@ -52,7 +52,7 @@ def basicArXivCall(subject, label, max_results=50):
 
 def loadIntoFile(summaryDF, subject, label):
     today = date.today()
-    summaryDF.to_csv(f'./resourceFiles/corpus2(arXiv)/arXivData(query={subject + " " +label}){today}.csv', index=False) 
+    summaryDF.to_csv(f'./Assignment1/resourceFiles/corpus2(arXiv)/arXivData(query={subject + " " +label}){today}.csv', index=False) 
 
 def joinLabeledData(filePath1, l1, filePath2, l2, newFilePath):
     contentDF = pd.read_csv(filePath1)
@@ -71,9 +71,9 @@ def main():
     #  datadf = basicArXivCall(subject, 'risk')
     #  loadIntoFile(datadf, subject.replace('\"',''), 'risk')
 
-    joinLabeledData('resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy risk)2024-02-08.csv', 'risk',
-                    'resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy safe)2024-02-08.csv', 'safe',
-                    'resourceFiles\\corpus3(newsAPI)\\arXivDataLabeled(query=Nuclear Energy).csv')
+    joinLabeledData('Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy risk)2024-02-08.csv', 'risk',
+                    'Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy safe)2024-02-08.csv', 'safe',
+                    'Assignment1\\resourceFiles\\corpus3(newsAPI)\\arXivDataLabeled(query=Nuclear Energy).csv')
 
 if __name__ == "__main__":
     main()

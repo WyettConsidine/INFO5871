@@ -44,11 +44,11 @@ def getSources(endpoint=endpointSources, key=api_key, country = 'us'):
 
 # read in pre-recorded, relevant sources from last year from a csv file.
 #the intended file was created with info from the 'getSources' funciton above.
-#File in directory location ./resourceFiles/newsAPISourceLists.csv
+#File in directory location ./Assignment1/resourceFiles/newsAPISourceLists.csv
 #Input: nohting
 #output: dicitonary mapping 5 possible political orientations to a list of news sources. 
 def getSourceBiasLists():   
-    with open('./resourceFiles/newsAPISourceLists.csv', newline='') as f: #read in sources
+    with open('./Assignment1/resourceFiles/newsAPISourceLists.csv', newline='') as f: #read in sources
         reader = csv.reader(f)
         sourceFile = list(reader)
         f.close()
@@ -139,7 +139,7 @@ def strip_ascii(text):
 
 def articleDescToCSV(descList, subject):
     today = date.today()
-    with open(f'./resourceFiles/corpus3(newsAPI)/newsapiData(query={subject}){today}.csv', 'a') as f:
+    with open(f'./Assignment1/resourceFiles/corpus3(newsAPI)/newsapiData(query={subject}){today}.csv', 'a') as f:
         for line in descList:
             print(strip_ascii(line))
             f.write(f"{strip_ascii(line)}\n") 
