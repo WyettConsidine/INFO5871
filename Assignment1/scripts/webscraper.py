@@ -73,8 +73,8 @@ def main():
     cont = urlsToTxt(urls, 20)
     writeToFile(cont, subject.replace('\"',''))
     # print(cont)
-    joinLabeledData('Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy sustainable)2024-02-08.csv', 'sustainable',
-                    'Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy unsustainable)2024-02-08.csv', 'unsustainble',
+    joinLabeledData('Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy sustainable)2024-02-09.csv', 'sustainable',
+                    'Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy unsustainable)2024-02-09.csv', 'unsustainble',
                      'Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability')
     #content=urlToText('https://www.wired.com/story/global-emissions-could-peak-sooner-than-you-think/')
 
