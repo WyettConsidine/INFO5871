@@ -4,30 +4,36 @@ import requests
 from datetime import date
 
 def urlToText(url):
+    #Use requests library to pull in HTML response
     page = requests.get(url)
+    #Use Beautiful Soup library to parse HTML
+    print(page.content)
     soup = BeautifulSoup(page.content, "html.parser")
-    #print(soup.prettify())
     content = ""
     paragraphs = soup.find_all('p')
-    #print(len(paragraphs))
+    #Itterate through all 'paragraph' type divisions/tags
     for p in paragraphs:
         for line in p.text.strip().split('\n'):
-            #print(line)
+            #Add line if it is long enough,
+            #And does not contain the copywrite character
             if (len(line) > 200) & ('©' not in line):
                 content += line
-    #print(content)
+    #return scraped text data
     return content
 
 def urlsToTxt(urls, num_urls = 10):
     corpus = []
     count = 0
+    #Itterate through the list of URLS
     for url in urls:
         count += 1 
+        #Use webscraping function on URL
         text = urlToText(url)
-        #print(text)
+        #add extracte text to corpus
         corpus.append(text)
         if count > num_urls:
             break
+    #Return list of scraped website text
     return corpus
         
 def strip_ascii(text):
@@ -60,23 +66,23 @@ def writeToFile(contList, subject):
 
 
 def main():
-    print('WebScraping Start')
-    subject = '\"Nuclear Energy\" sustainable'
-    api_key, endpoint = newsAPI.getArticleURLsParams()
-    urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
-    cont = urlsToTxt(urls, 20)
-    writeToFile(cont, subject.replace('\"',''))
+    # print('WebScraping Start')
+    # subject = '\"Nuclear Energy\" sustainable'
+    # api_key, endpoint = newsAPI.getArticleURLsParams()
+    # urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
+    # cont = urlsToTxt(urls, 20)
+    # writeToFile(cont, subject.replace('\"',''))
 
-    subject = '\"Nuclear Energy\" unsustainable'
-    api_key, endpoint = newsAPI.getArticleURLsParams()
-    urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
-    cont = urlsToTxt(urls, 20)
-    writeToFile(cont, subject.replace('\"',''))
-    # print(cont)
-    joinLabeledData('Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy sustainable)2024-02-09.csv', 'sustainable',
-                    'Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy unsustainable)2024-02-09.csv', 'unsustainble',
-                     'Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability')
-    #content=urlToText('https://www.wired.com/story/global-emissions-could-peak-sooner-than-you-think/')
+    # subject = '\"Nuclear Energy\" unsustainable'
+    # api_key, endpoint = newsAPI.getArticleURLsParams()
+    # urls = newsAPI.getArticleURLs(api_key, endpoint, subject)
+    # cont = urlsToTxt(urls, 20)
+    # writeToFile(cont, subject.replace('\"',''))
+    # # print(cont)
+    # joinLabeledData('Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy sustainable)2024-02-09.csv', 'sustainable',
+    #                 'Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy unsustainable)2024-02-09.csv', 'unsustainble',
+    #                  'Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability')
+    content=urlToText('https://www.wired.com/story/global-emissions-could-peak-sooner-than-you-think/')
 
     #content2 = urlToText('https://www.androidcentral.com/phones/betavolt-technology-developing-radionuclide-battery')
 

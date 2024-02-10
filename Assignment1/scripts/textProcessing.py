@@ -150,6 +150,7 @@ def textProcessor(filepath,
                    stemORlem = {'stemmer', 'lemmer'}, 
                    labeled = False,
                    countORtfidf = {'count', 'tfidf'}, maxFeatures = 30, max_df=1, min_df=1):
+    #Decision path to appropriate function
     if textType == 'content':
         output, vectorizer = contentVectorizer(filepath,maxFeatures,contentOrigin,stemORlem,max_df,min_df)
     elif textType == 'corpus':
@@ -169,17 +170,17 @@ def textProcessor(filepath,
 
 def main():
     print('Text Processing Start')
-    # outputArtCorpus, _ = textProcessor('./Assignment1/resourceFiles/corpus1(manual)', textType='corpus', countORtfidf='count', stemORlem='lemmer')
+    # outputArtCorpus, _ = textProcessor('./Assignment1/resourceFiles/corpus1(manual)', textType='corpus', countORtfidf='tfidf', stemORlem='lemmer')
     # print(outputArtCorpus)
 
-    outputarXiv, _ = textProcessor('Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'arXiv', labeled = True, stemORlem='stemmer', maxFeatures=20, max_df=7, min_df=4)
-    print(outputarXiv)
+    # outputarXiv, _ = textProcessor('Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'arXiv', labeled = True, stemORlem='stemmer', maxFeatures=20, max_df=7, min_df=4)
+    # print(outputarXiv)
 
-    # outputNewsAPI, _ = textProcessor('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'newsAPI', labeled = True, stemORlem='lemmer', maxFeatures=20, max_df=7, min_df =10)
+    # outputNewsAPI, _ = textProcessor('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'newsAPI', labeled = True, stemORlem='lemmer', maxFeatures=10, max_df=20, min_df = 20)
     # print(outputNewsAPI)
 
-    # outputScrape, _ = textProcessor('resourceFiles\corpus4(bs4)\webScrapedLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'scraped', stemORlem='lemmer', labeled=True, maxFeatures=20, max_df = 5, min_df = 4)
-    # print(outputScrape)
+    outputScrape, _ = textProcessor('Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability.csv', textType='content', contentOrigin= 'scraped', stemORlem='lemmer', labeled=True, maxFeatures=10, max_df = 15, min_df = 20)
+    print(outputScrape)
 
 
     # outputSt, dirVectorizer = articleCorpusVectorizer('./Assignment1/resourceFiles/corpus1(manual)', stemORlem='stemmer')

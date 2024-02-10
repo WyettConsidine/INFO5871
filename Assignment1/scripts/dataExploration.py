@@ -3,24 +3,19 @@ from PIL import Image
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from nltk.corpus import stopwords
-
-
-# regular expression import
 import re
-
-# uni-code library
 import unicodedata
-
-# natural language toolkit library/modules
 import nltk
 from nltk.tokenize.toktok import ToktokTokenizer
 from nltk.corpus import stopwords
 
+def readFile(filePath):
+    with open(filePath, 'r') as f:
+        text = f.read().replace('\n', '')
+        f.close()
+    return text
+
 def basic_clean(string):
-    '''
-    This function takes in a string and
-    returns the string normalized.
-    '''
     string = unicodedata.normalize('NFKD', string)\
              .encode('ascii', 'ignore')\
              .decode('utf-8', 'ignore')
@@ -28,16 +23,8 @@ def basic_clean(string):
     return string
 
 def tokenize(string):
-    '''
-    This function takes in a string and
-    returns a tokenized string.
-    '''
-    # Create tokenizer.
     tokenizer = nltk.tokenize.ToktokTokenizer()
-
-    # Use tokenizer
     string = tokenizer.tokenize(string, return_str = True)
-
     return string
 
 def stem(string):
@@ -65,11 +52,17 @@ def clean(text):
     return remove_stopwords(lemmatize(basic_clean(text)))
 
 def wordCloud(text):
+    print('making wordcloud')
     wc = WordCloud().generate(text)
     plt.imshow(wc)
+    plt.show()
 
 def main():
     print('Making word cloud')
+    text = readFile('Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy sustainable)2024-02-09.csv')
+    text = clean(text)
+    print(text)
+    wordCloud(text)
 
 if __name__ == "__main__":
     main()

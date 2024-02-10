@@ -87,6 +87,7 @@ def getDistributionOfSources(sourceBiasDict, numSources=10):
 
 
 def basicNewsAPICall(endpoint, key, subject, numArticles=100):
+    #define API call parameters
     URLPost = {'apiKey': key,
                     'language':'en',
                     'source': 'us', 
@@ -94,7 +95,9 @@ def basicNewsAPICall(endpoint, key, subject, numArticles=100):
                     'sortBy' : 'relevancy',   #relevancy, popularity
                     'totalRequests': 20,
                     'q':subject}
+    #Send API Call, and recienve the response
     resp1 = requests.get(endpoint,URLPost)
+    #return the response in JSON format
     return resp1.json()
 
 
@@ -110,27 +113,31 @@ def getArticleURLsFromSources(sourceList, key, endpoint, subject, numArticlesPer
     #articleURLS.append([art['url'] for art in json['articles']])
     return articleURLS  
 
+#Use function to bring parameters from this file to web scraping file
 def getArticleURLsParams():
     return api_key, endpointEverything
 
 def getArticleURLs(key, endpoint,subject, numArticles = 50):
     articleURLS = []
+    #Use basic API call to get list of URLS
     json = basicNewsAPICall(endpoint, key, subject, numArticles)
+    #Itterate through articles and collect URLS
     for article in json['articles']:
-        #print(article['source']['name'])
         articleURLS.append(article['url'])
-    #print([art['url'] for art in json['articles']])
-    #articleURLS.append([art['url'] for art in json['articles']])
     return articleURLS
 
 def getArticleDesc(key, endpoint,subject, numArticles = 50):
     articleDesc = []
+    #USE the basic API call
     json = basicNewsAPICall(endpoint, key, subject, numArticles)
+    #Itterate through JSON, and collect article descriptions
     for article in json['articles']:
         articleDesc.append(article['description'])
+    #Return list of descriptions
     return articleDesc
 
 def strip_ascii(text):
+    #Itterate through each character, keeping characters only in the ASCII range of acceptable text
     return "".join(
         char for char
         in text
@@ -139,11 +146,24 @@ def strip_ascii(text):
 
 def articleDescToCSV(descList, subject):
     today = date.today()
+    #Open a new CSV file, named with the query, and todays date
     with open(f'./Assignment1/resourceFiles/corpus3(newsAPI)/newsapiData(query={subject}){today}.csv', 'a') as f:
         for line in descList:
             print(strip_ascii(line))
+            #Write the article Descriptions into the file, applying the cleaning function along the way
             f.write(f"{strip_ascii(line)}\n") 
 
+def joinLabeledData(filePath1, l1, filePath2, l2, newFilePath):
+    with (open(filePath1, 'r')) as f1:
+        lines1 = [[l1, line.strip()] for line in f1]
+        f1.close()
+    with (open(filePath2, 'r')) as f2:
+        lines2 = [[l2, line.strip()] for line in f2]
+        f2.close()
+    fullLines = lines1 + lines2
+    with(open(newFilePath, 'w')) as newF:
+        for line in fullLines:
+            newF.write(line[0] + "," + line[1] + "\n")
 
 #//////////////////////////////////// TEST ZONE
 #MAKE THE BASIC CALL GRAB 100 FROM A TIMEFRAME, THEN WALK BACKWARDS UNTIL YOU HAVE N URL SOURCES
@@ -163,11 +183,22 @@ def articleDescToCSV(descList, subject):
 #////////////////////////////////////
 
 def main():
-    subject = '\"Nuclear Energy\" risk'
+    print(basicNewsAPICall(endpointEverything,api_key,'Nuclear Energy', 10))
+    # subject = '\"Nuclear Energy\" sustainable'    
     # descList = getArticleDesc(api_key, endpointEverything, subject)
     # print(descList)
     # articleDescToCSV(descList, subject.replace('\"', ''))
-    print(getArticleURLs(api_key, endpointEverything, subject))
+    
+    # subject = '\"Nuclear Energy\" unsustainable'    
+    # descList = getArticleDesc(api_key, endpointEverything, subject)
+    # print(descList)
+    # articleDescToCSV(descList, subject.replace('\"', ''))
+
+    # joinLabeledData('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=Nuclear Energy sustainable)2024-02-10.csv', 'sustainable',
+    #                 'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=Nuclear Energy unsustainable)2024-02-10.csv', 'unsustainable',
+    #                 'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy)sustainability.csv')
+
+    #print(getArticleURLs(api_key, endpointEverything, subject))
 
 
 if __name__ == "__main__":
