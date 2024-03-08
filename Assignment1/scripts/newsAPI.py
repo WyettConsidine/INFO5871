@@ -96,7 +96,9 @@ def basicNewsAPICall(endpoint, key, subject, numArticles=100):
                     'totalRequests': 20,
                     'q':subject}
     #Send API Call, and recienve the response
+    print(URLPost)
     resp1 = requests.get(endpoint,URLPost)
+    print(resp1.content)
     #return the response in JSON format
     return resp1.json()
 
@@ -117,16 +119,19 @@ def getArticleURLsFromSources(sourceList, key, endpoint, subject, numArticlesPer
 def getArticleURLsParams():
     return api_key, endpointEverything
 
-def getArticleURLs(key, endpoint,subject, numArticles = 50):
+def getArticleURLs(key, endpoint,subject, numArticles = 50, retSources = False):
     articleURLS = []
     #Use basic API call to get list of URLS
     json = basicNewsAPICall(endpoint, key, subject, numArticles)
     #Itterate through articles and collect URLS
     for article in json['articles']:
-        articleURLS.append(article['url'])
+        if retSources:
+            articleURLS.append((article['source']['name'], article['url']))
+        else:
+            articleURLS.append(article['url'])
     return articleURLS
 
-def getArticleDesc(key, endpoint,subject, numArticles = 50):
+def getArticleDesc(key, endpoint,subject, numArticles = 100):
     articleDesc = []
     #USE the basic API call
     json = basicNewsAPICall(endpoint, key, subject, numArticles)
@@ -138,11 +143,15 @@ def getArticleDesc(key, endpoint,subject, numArticles = 50):
 
 def strip_ascii(text):
     #Itterate through each character, keeping characters only in the ASCII range of acceptable text
-    return "".join(
-        char for char
-        in text
-        if 31 < ord(char) < 127
-    )
+    print(text)
+    if text is not None:
+        return "".join(
+            char for char
+            in text
+            if 31 < ord(char) < 127
+        )
+    else:
+        return ''
 
 def articleDescToCSV(descList, subject):
     today = date.today()
@@ -165,6 +174,36 @@ def joinLabeledData(filePath1, l1, filePath2, l2, newFilePath):
         for line in fullLines:
             newF.write(line[0] + "," + line[1] + "\n")
 
+def joinLabeledData4(filePath1, l1, filePath2, l2, filePath4, l4, filePath3, l3,newFilePath):
+    with (open(filePath1, 'r')) as f1:
+        lines1 = [[l1, line.strip()] for line in f1]
+        f1.close()
+    with (open(filePath2, 'r')) as f2:
+        lines2 = [[l2, line.strip()] for line in f2]
+        f2.close()
+    with (open(filePath3, 'r')) as f3:
+        lines3 = [[l3, line.strip()] for line in f3]
+        f3.close()
+    with (open(filePath4, 'r')) as f4:
+        lines4 = [[l4, line.strip()] for line in f4]
+        f4.close()
+    fullLines = lines1 + lines2+lines3+lines4
+    with(open(newFilePath, 'w')) as newF:
+        for line in fullLines:
+            newF.write(line[0] + "," + line[1] + "\n")
+
+
+def get4topicsAndSave(topics, api_key, endpointEverything, newFilePath):
+    flines = []
+    for topic in topics:
+        descList = getArticleDesc(api_key, endpointEverything, topic)
+        labeled = [[topic, line.strip()] for line in descList]
+        flines.append(labeled)
+    fullLines = flines[0] + flines[1] + flines[2] + flines[3]
+    with(open(newFilePath, 'w')) as newF:
+        for line in fullLines:
+            newF.write(line[0] + "," + line[1] + "\n")
+
 #//////////////////////////////////// TEST ZONE
 #MAKE THE BASIC CALL GRAB 100 FROM A TIMEFRAME, THEN WALK BACKWARDS UNTIL YOU HAVE N URL SOURCES
 
@@ -183,8 +222,29 @@ def joinLabeledData(filePath1, l1, filePath2, l2, newFilePath):
 #////////////////////////////////////
 
 def main():
-    print(basicNewsAPICall(endpointEverything,api_key,'Nuclear Energy', 10))
-    # subject = '\"Nuclear Energy\" sustainable'    
+    #resp = basicNewsAPICall(endpointEverything,api_key,'technology')
+    topics = ['technology','arts','media','science']
+    newFilePath = 'testDataLabeled'
+
+
+    # subject = topics[0]   
+    # descList = getArticleDesc(api_key, endpointEverything, subject)
+    # print(descList)
+    # articleDescToCSV(descList, subject.replace('\"', ''))
+
+
+    # subject = topics[1]       
+    # descList = getArticleDesc(api_key, endpointEverything, subject)
+    # print(descList)
+    # articleDescToCSV(descList, subject.replace('\"', ''))
+
+
+    # subject = topics[2]      
+    # descList = getArticleDesc(api_key, endpointEverything, subject)
+    # print(descList)
+    # articleDescToCSV(descList, subject.replace('\"', ''))
+
+    # subject = topics[3]       
     # descList = getArticleDesc(api_key, endpointEverything, subject)
     # print(descList)
     # articleDescToCSV(descList, subject.replace('\"', ''))
@@ -197,6 +257,13 @@ def main():
     # joinLabeledData('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=Nuclear Energy sustainable)2024-02-10.csv', 'sustainable',
     #                 'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=Nuclear Energy unsustainable)2024-02-10.csv', 'unsustainable',
     #                 'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy)sustainability.csv')
+    joinLabeledData4('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=arts)2024-03-07.csv', 'arts',
+                    'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=media)2024-03-07.csv', 'media',
+                    'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=science)2024-03-07.csv', 'science',
+                    'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=technology)2024-03-07.csv', 'technology',
+                    'testDataLabeled.csv')
+       
+
 
     #print(getArticleURLs(api_key, endpointEverything, subject))
 

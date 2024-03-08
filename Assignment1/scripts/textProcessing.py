@@ -56,29 +56,37 @@ def articleCorpusVectorizer(FolderDir, stemORlem = {'stemmer', 'lemmer', 'neithe
     return countVecDF, vectorizer
 
 
-def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsAPI', 'scraped'}, stemORlem = {'stemmer', 'lemmer', 'neither'}, label = False, max_df=1, min_df=1):
+def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsAPI', 'scraped'}, stemORlem = {'stemmer', 'lemmer', 'neither'}, tfidf = False, sources = False, label = False, max_df=1, min_df=1):
+    #read in and pre-process data
     if inputOrigin == 'arXiv':
         contentDF = pd.read_csv (filePath)
-        content = contentDF['summary'].values[1:]
+        contentR = contentDF['summary'].values[1:]
         if label:
             print(contentDF['Label'].values[1:])
-            content = list(zip(contentDF['Label'].values[1:], content))
-            content = [str(item[0])+','+str(item[1]) for item in content]
-            print(content)
+            contentR = list(zip(contentDF['Label'].values[1:], contentR))
+            contentR = [str(item[0])+','+str(item[1]) for item in contentR]
+            #print(contentR)
     elif inputOrigin == 'newsAPI':
         with open(filePath) as file:
-            content = [line.strip() for line in file]
+            contentR = [line.strip() for line in file]
     elif inputOrigin == 'scraped':
         with open(filePath) as file:
-            content = [line.strip() for line in file]
+            contentR = [line.strip() for line in file]
     else:
         print("enter valid input origin")
         return None    
     
     if label:
-        labels = [line.split(',', 1)[0] for line in content]
+        labels = [line.split(',', 1)[0] for line in contentR]
         #print(labels)
-        content = [line.split(',', 1)[1] for line in content]
+        content = [line.split(',', 1)[1] for line in contentR]
+        #print(content)
+    if sources:
+        #print(content)
+        labels = [line.split(',', 2)[0] for line in contentR]
+        sources = [line.split(',', 2)[1] for line in contentR]
+        print('here')
+        content = [line.split(',', 2)[2] for line in contentR]
         #print(content)
 
     if stemORlem == 'lemmer':
@@ -107,6 +115,21 @@ def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsA
                                      max_features = maxFeatures, 
                                      max_df=max_df, 
                                      min_df=min_df )
+    elif tfidf == True:
+        print('here in tfidf')
+        LEMMER = WordNetLemmatizer()
+        def lemFunc(str_input):
+            words = re.sub(r'[^A-Za-z]',' ',str_input).lower().split()
+            words= [LEMMER.lemmatize(word) for word in words]
+            return words
+        vectorizer = TfidfVectorizer(input = 'content', 
+                                     stop_words='english', 
+                                     lowercase = True, 
+                                     tokenizer = lemFunc, 
+                                     max_features = maxFeatures, 
+                                     max_df=max_df, 
+                                     min_df=min_df )
+            
     else:
         vectorizer = CountVectorizer(input = 'content', 
                                      stop_words='english', 
@@ -122,10 +145,13 @@ def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsA
     for word in vocab:
         if any(char.isdigit() for char in word)| (len(word) <= 2):
             countVecDF= countVecDF.drop(columns= [word],)
-               
+    if sources:
+        countVecDF.insert(0, 'Source', sources, True)
     if label:
-        countVecDF.insert(0, 'Label', labels, True)
+            countVecDF.insert(0, 'Label', labels, True) 
+        
 
+    
     print(len(countVecDF.columns))
     
     return countVecDF, vectorizer
@@ -143,16 +169,22 @@ def ArticleTfidfVectorizer(FolderDir, maxFeatures = 30):
     
     return tfidfVecDF, tfidfVect
 
-
 def textProcessor(filepath,
                    textType={'content', 'corpus'},
                    contentOrigin = {'arXiv', 'newsAPI', 'scraped'}, 
                    stemORlem = {'stemmer', 'lemmer'}, 
                    labeled = False,
-                   countORtfidf = {'count', 'tfidf'}, maxFeatures = 30, max_df=1, min_df=1):
+                   countORtfidf = {'count', 'tfidf'}, 
+                   sources = False,
+                   maxFeatures = 30, max_df=1, min_df=1):
     #Decision path to appropriate function
     if textType == 'content':
-        output, vectorizer = contentVectorizer(filepath,maxFeatures,contentOrigin,stemORlem,max_df,min_df)
+        if countORtfidf == 'tfidf':
+            tfidfB = True
+        else:
+            tfidfB = False
+        output, vectorizer = contentVectorizer(filepath,maxFeatures,contentOrigin,stemORlem,label=labeled,tfidf=tfidfB,
+                                                sources=sources, max_df=max_df,min_df=min_df)
     elif textType == 'corpus':
         if countORtfidf == 'count':
             output, vectorizer = articleCorpusVectorizer(filepath, stemORlem, maxFeatures, max_df, min_df)
@@ -168,6 +200,31 @@ def textProcessor(filepath,
         vectorizer = None
     return output, vectorizer
 
+def makeTextTransactional(filePath, newFilePath):
+    LEMMER = WordNetLemmatizer()
+    def lemFunc(str_input):
+        words = re.sub(r'[^A-Za-z]',' ',str_input).lower().split()
+        words= [LEMMER.lemmatize(word) for word in words]
+        return words
+    vectorizer = CountVectorizer(input = 'content', 
+                                    stop_words='english', 
+                                    lowercase = True, 
+                                    tokenizer = lemFunc,
+                                    max_features=100)
+    with open(filePath, 'r') as f:
+        with open(newFilePath, 'w') as nf:
+            for line in f:
+                line = line.split(',',2)[2]
+                vectorizer.fit_transform([line])
+                vocab = vectorizer.get_feature_names_out()
+                words = list(vocab)
+                words = [word for word in words if len(word) > 3]
+                nf.write(','.join(words))
+                nf.write('\n')
+        nf.close()
+    f.close()
+
+
 def main():
     print('Text Processing Start')
     # outputArtCorpus, _ = textProcessor('./Assignment1/resourceFiles/corpus1(manual)', textType='corpus', countORtfidf='tfidf', stemORlem='lemmer')
@@ -176,11 +233,13 @@ def main():
     # outputarXiv, _ = textProcessor('Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'arXiv', labeled = True, stemORlem='stemmer', maxFeatures=20, max_df=7, min_df=4)
     # print(outputarXiv)
 
-    # outputNewsAPI, _ = textProcessor('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'newsAPI', labeled = True, stemORlem='lemmer', maxFeatures=10, max_df=20, min_df = 20)
-    # print(outputNewsAPI)
+    outputNewsAPI, _ = textProcessor('testDataLabeled.csv', textType='content', contentOrigin= 'newsAPI', labeled = True, stemORlem='lemmer', maxFeatures=30, max_df=100, min_df =10)
+    print(outputNewsAPI.columns)
+    
+    #outputNewsAPI.to_csv('testDataLabeledDF')
 
-    outputScrape, _ = textProcessor('Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability.csv', textType='content', contentOrigin= 'scraped', stemORlem='lemmer', labeled=True, maxFeatures=10, max_df = 15, min_df = 20)
-    print(outputScrape)
+    #outputScrape, _ = textProcessor('Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability.csv', textType='content', contentOrigin= 'scraped', stemORlem='lemmer', labeled=True, maxFeatures=10, max_df = 15, min_df = 20)
+    #print(outputScrape)
 
 
     # outputSt, dirVectorizer = articleCorpusVectorizer('./Assignment1/resourceFiles/corpus1(manual)', stemORlem='stemmer')
@@ -198,9 +257,18 @@ def main():
     # output3L, contVectorizer = contentVectorizer('./Assignment1/resourceFiles/corpus3(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'newsAPI', stemORlem='lemmer')
     # print(output3St.columns)
     # print(output3L.columns)
+    #contentVectorizer('./Assignment1/resourceFiles/corpus3(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'newsAPI', stemORlem='lemmer')
+
+
+    # output4St, contVectorizer = contentVectorizer('./Assignment1/resourceFiles/corpus4(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'newsAPI', stemORlem='stemmer')
+    # output4L, contVectorizer = contentVectorizer('./Assignment1/resourceFiles/corpus4(newsAPI)/newsapiData(query=nuclear energy)2024-01-30.csv', inputOrigin = 'newsAPI', stemORlem='lemmer')
+    # print(output4St.columns)
+    # print(output4L.columns)
 
     # output = ArticleTfidfVectorizer('./Assignment1/resourceFiles/corpus1(manual)')
     # print(output)
+    #makeTextTransactionalTest('testDataLabeled.csv','transactional.csv' )
+
 
 if __name__ == "__main__":
     main()

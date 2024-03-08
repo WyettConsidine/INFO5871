@@ -15,6 +15,7 @@ def readFile(filePath):
         f.close()
     return text
 
+
 def basic_clean(string):
     string = unicodedata.normalize('NFKD', string)\
              .encode('ascii', 'ignore')\
@@ -44,7 +45,7 @@ def remove_stopwords(string, extra_words = [], exclude_words = []):
     stopword_list = set(stopword_list) - set(exclude_words)
     stopword_list = stopword_list.union(set(extra_words))
     words = string.split()
-    filtered_words = [word for word in words if word not in stopword_list]
+    filtered_words = [word for word in words if (word not in stopword_list) & (len(word)>2)]
     string_without_stopwords = ' '.join(filtered_words)    
     return string_without_stopwords
 
@@ -57,12 +58,19 @@ def wordCloud(text):
     plt.imshow(wc)
     plt.show()
 
-def main():
+def createWordCloud(filepath):
     print('Making word cloud')
-    text = readFile('Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy sustainable)2024-02-09.csv')
+    text = readFile(filepath)
     text = clean(text)
     print(text)
     wordCloud(text)
 
 if __name__ == "__main__":
-    main()
+    
+    createWordCloud('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=arts)2024-03-07.csv')
+    
+    createWordCloud('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=media)2024-03-07.csv')
+
+    createWordCloud('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=science)2024-03-07.csv')
+
+    createWordCloud('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=technology)2024-03-07.csv')
