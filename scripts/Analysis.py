@@ -85,10 +85,10 @@ def visClusters2D(centers, vectors, LSCDF):
 
 def main():
     print("main")
-    #cleanEmptyLines('Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk.csv')
+    #cleanEmptyLines('resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk.csv')
 
-    tfidfVects = readInAndProcessText('Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk cleaned.csv')
-    tfidfVects.to_csv('Assignment1\\resourceFiles\\tfidfData.csv')
+    tfidfVects = readInAndProcessText('resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk cleaned.csv')
+    tfidfVects.to_csv('resourceFiles\\tfidfData.csv')
     # labelsASources, vectors = stripLabelandSource(tfidfVects)
     # lsClustered, centers = applyKMeans(vectors, labelsASources, 2)
     # LSCDF = LabeledToDF(lsClustered)

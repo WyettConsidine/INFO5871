@@ -100,9 +100,9 @@ def main():
     writeToFile(cont, subject.replace('\"',''))
 
     # print(cont)
-    joinLabeledData('Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy risk)2024-03-01.csv', 'risk',
-                    'Assignment1\\resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy safe)2024-03-01.csv', 'safe',
-                     'Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk.csv', sources = [sources1,sources2])
+    joinLabeledData('resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy risk)2024-03-01.csv', 'risk',
+                    'resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy safe)2024-03-01.csv', 'safe',
+                     'resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk.csv', sources = [sources1,sources2])
     #content=urlToText('https://www.wired.com/story/global-emissions-could-peak-sooner-than-you-think/')
 
     #content2 = urlToText('https://www.androidcentral.com/phones/betavolt-technology-developing-radionuclide-battery')

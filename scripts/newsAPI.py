@@ -254,13 +254,13 @@ def main():
     # print(descList)
     # articleDescToCSV(descList, subject.replace('\"', ''))
 
-    # joinLabeledData('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=Nuclear Energy sustainable)2024-02-10.csv', 'sustainable',
-    #                 'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=Nuclear Energy unsustainable)2024-02-10.csv', 'unsustainable',
-    #                 'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy)sustainability.csv')
-    joinLabeledData4('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=arts)2024-03-07.csv', 'arts',
-                    'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=media)2024-03-07.csv', 'media',
-                    'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=science)2024-03-07.csv', 'science',
-                    'Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=technology)2024-03-07.csv', 'technology',
+    # joinLabeledData('resourceFiles\\corpus3(newsAPI)\\newsapiData(query=Nuclear Energy sustainable)2024-02-10.csv', 'sustainable',
+    #                 'resourceFiles\\corpus3(newsAPI)\\newsapiData(query=Nuclear Energy unsustainable)2024-02-10.csv', 'unsustainable',
+    #                 'resourceFiles\\corpus3(newsAPI)\\newsapiDataLabeled(query=Nuclear Energy)sustainability.csv')
+    joinLabeledData4('resourceFiles\\corpus3(newsAPI)\\newsapiData(query=arts)2024-03-07.csv', 'arts',
+                    'resourceFiles\\corpus3(newsAPI)\\newsapiData(query=media)2024-03-07.csv', 'media',
+                    'resourceFiles\\corpus3(newsAPI)\\newsapiData(query=science)2024-03-07.csv', 'science',
+                    'resourceFiles\\corpus3(newsAPI)\\newsapiData(query=technology)2024-03-07.csv', 'technology',
                     'testDataLabeled.csv')
        
 

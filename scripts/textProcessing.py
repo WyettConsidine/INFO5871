@@ -230,7 +230,7 @@ def main():
     # outputArtCorpus, _ = textProcessor('./Assignment1/resourceFiles/corpus1(manual)', textType='corpus', countORtfidf='tfidf', stemORlem='lemmer')
     # print(outputArtCorpus)
 
-    # outputarXiv, _ = textProcessor('Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'arXiv', labeled = True, stemORlem='stemmer', maxFeatures=20, max_df=7, min_df=4)
+    # outputarXiv, _ = textProcessor('resourceFiles\\corpus2(arXiv)\\arXivDataLabeled(query=Nuclear Energy).csv', textType='content', contentOrigin= 'arXiv', labeled = True, stemORlem='stemmer', maxFeatures=20, max_df=7, min_df=4)
     # print(outputarXiv)
 
     outputNewsAPI, _ = textProcessor('testDataLabeled.csv', textType='content', contentOrigin= 'newsAPI', labeled = True, stemORlem='lemmer', maxFeatures=30, max_df=100, min_df =10)
@@ -238,7 +238,7 @@ def main():
     
     #outputNewsAPI.to_csv('testDataLabeledDF')
 
-    #outputScrape, _ = textProcessor('Assignment1\\resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability.csv', textType='content', contentOrigin= 'scraped', stemORlem='lemmer', labeled=True, maxFeatures=10, max_df = 15, min_df = 20)
+    #outputScrape, _ = textProcessor('resourceFiles\\corpus4(bs4)\\webScrapedLabeled(query=Nuclear Energy)sustainability.csv', textType='content', contentOrigin= 'scraped', stemORlem='lemmer', labeled=True, maxFeatures=10, max_df = 15, min_df = 20)
     #print(outputScrape)
 
 

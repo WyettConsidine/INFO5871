@@ -67,10 +67,10 @@ def createWordCloud(filepath):
 
 if __name__ == "__main__":
     
-    createWordCloud('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=arts)2024-03-07.csv')
+    createWordCloud('resourceFiles\\corpus3(newsAPI)\\newsapiData(query=arts)2024-03-07.csv')
     
-    createWordCloud('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=media)2024-03-07.csv')
+    createWordCloud('resourceFiles\\corpus3(newsAPI)\\newsapiData(query=media)2024-03-07.csv')
 
-    createWordCloud('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=science)2024-03-07.csv')
+    createWordCloud('resourceFiles\\corpus3(newsAPI)\\newsapiData(query=science)2024-03-07.csv')
 
-    createWordCloud('Assignment1\\resourceFiles\\corpus3(newsAPI)\\newsapiData(query=technology)2024-03-07.csv')
+    createWordCloud('resourceFiles\\corpus3(newsAPI)\\newsapiData(query=technology)2024-03-07.csv')
