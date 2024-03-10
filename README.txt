@@ -1,5 +1,14 @@
 This the repo for wyett considine's INFO 5871 homeworks. 
 
+For Assignement 2:
+K-Means is in the K-means.py file.
+Heirarchical Clustering is in the RAnalysis.rmd file
+ARM is in the RAnalysis.rmd file
+LDA is in the LDA.py file.
+Data used is in the resroucesFile directory. 
+Pictires of code, visualizations, and data in the figures directory. 
+
+
 
 For Assignement 1:
 Look in the Assignement1 folder.
