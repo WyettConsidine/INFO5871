@@ -25,14 +25,14 @@ library(stringr)
 #install.packages('arulesViz')
 library(arulesViz)
 
-setwd("C:\\Users\\wyett\\OneDrive\\Documents\\INFO5871\\Assignment1\\") #to set the new working Directory
+setwd("C:\\Users\\wyett\\OneDrive\\Documents\\INFO5871\\") #to set the new working Directory
 data <- read.csv('resourceFiles\\basketData.csv', header = FALSE, sep = ',')
 
 #head(data)
 
 ```
 ```{r}
-transtotal <- arules::read.transactions("C:\\Users\\wyett\\OneDrive\\Documents\\INFO5871\\Assignment1\\resourceFiles\\basketData.csv",
+transtotal <- arules::read.transactions("C:\\Users\\wyett\\OneDrive\\Documents\\INFO5871\\resourceFiles\\basketData.csv",
                   rm.duplicates = TRUE, 
                   format = "basket",  ##if you use "single" also use cols=c(1,2)
                   sep=",",  ## csv file
@@ -44,12 +44,12 @@ print(typeof(transtotal))
 
 ```{r}
 
-rules = arules::apriori(transtotal, parameter = list(support = 0.3,confidence = 0.6), maxlen=5)
+rules = arules::apriori(transtotal, parameter = list(support = 0.28,confidence = 0.1), maxlen=5)
 print(length(rules))
 rules <- subset(rules, subset = arules::size(arules::lhs(rules)) != 0)
 #print(arules::inspect(rules))
 top.conf <- sort(rules, decreasing = TRUE, na.last = NA, by = "lift")
-inspect(head(top.conf, 10))
+inspect(head(top.conf, 15))
 ```
 
 ```{r}
@@ -59,7 +59,7 @@ plot(rules, method="graph")
 
 Left and right side control:
 ```{r}
-rules = arules::apriori(transtotal, parameter = list(support = 0.3,confidence = 0.6), maxlen=5,appearance = list(lhs = c("state"), default="rhs"))
+rules = arules::apriori(transtotal, parameter = list(support = 0.3,confidence = 0.6), maxlen=2,appearance = list(lhs = c("time"), default="rhs"))
 print(length(rules))
 rules <- subset(rules, subset = arules::size(arules::lhs(rules)) != 0)
 print(arules::inspect(rules))

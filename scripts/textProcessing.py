@@ -143,7 +143,7 @@ def contentVectorizer(filePath, maxFeatures = 30, inputOrigin = {'arXiv', 'newsA
     countVecDF = pd.DataFrame(output.toarray(), columns=vocab)
     print(len(countVecDF.columns))
     for word in vocab:
-        if any(char.isdigit() for char in word)| (len(word) <= 2):
+        if any(char.isdigit() for char in word)| (len(word) <= 3):
             countVecDF= countVecDF.drop(columns= [word],)
     if sources:
         countVecDF.insert(0, 'Source', sources, True)
@@ -200,27 +200,29 @@ def textProcessor(filepath,
         vectorizer = None
     return output, vectorizer
 
+
+#This function takes in a file path containing raw data, and outputs a trnasactionalized form.
 def makeTextTransactional(filePath, newFilePath):
-    LEMMER = WordNetLemmatizer()
+    LEMMER = WordNetLemmatizer()     #Define a lemming tokenization function for Count Vect
     def lemFunc(str_input):
-        words = re.sub(r'[^A-Za-z]',' ',str_input).lower().split()
+        words = re.sub(r'[^A-Za-z]',' ',str_input).lower().split()  #clean numerics, and make lowercase
         words= [LEMMER.lemmatize(word) for word in words]
         return words
-    vectorizer = CountVectorizer(input = 'content', 
+    vectorizer = CountVectorizer(input = 'content',   #define count vectorizer, removing english stopwords,
                                     stop_words='english', 
                                     lowercase = True, 
-                                    tokenizer = lemFunc,
-                                    max_features=100)
+                                    tokenizer = lemFunc, #use lemming
+                                    max_features=100)  #Take top 100 most frequent words per document
     with open(filePath, 'r') as f:
         with open(newFilePath, 'w') as nf:
             for line in f:
-                line = line.split(',',2)[2]
-                vectorizer.fit_transform([line])
-                vocab = vectorizer.get_feature_names_out()
+                line = line.split(',',2)[2]   #remove labels and sources
+                vectorizer.fit_transform([line]) 
+                vocab = vectorizer.get_feature_names_out() #apply the count vectorizer, and take words
                 words = list(vocab)
-                words = [word for word in words if len(word) > 3]
+                words = [word for word in words if len(word) > 3] #remove words 3 char or less
                 nf.write(','.join(words))
-                nf.write('\n')
+                nf.write('\n')  #write to new file
         nf.close()
     f.close()
 
