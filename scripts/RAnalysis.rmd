@@ -94,12 +94,7 @@ library(ggplot2)     # for data visualization
 library(cluster)     # for general clustering algorithms
 #install.packages('factoextra')
 library(factoextra)  # for visualizing cluster results
-
-## !!!!!!!!!!!!!!!!!
-## You CANNOT use distance metrics on non-numeric data
-## Before we can proceed - we need to REMOVE
-## all non-numeric columns
-setwd("C:\\Users\\wyett\\OneDrive\\Documents\\INFO5871\\Assignment1\\") #to set the new working Directory
+setwd("C:\\Users\\wyett\\OneDrive\\Documents\\INFO5871\\") #to set the new working Directory
 print(getwd())
 filepath <- 'resourceFiles\\tfidfData.csv'
 textData <- read.csv(filepath)
@@ -125,23 +120,17 @@ plot(hc_D2)
 ```
 
 ```{r}
-
-#(My_m <- (as.matrix(scale(t(SmallCorpus_DF_DT)))))
-My_m = as.matrix(textVectors)
-print(textVectors)
+My_m = t(as.matrix(textVectors))
 (My_cosine_dist = 1-crossprod(My_m) /(sqrt(colSums(My_m^2)%*%t(colSums(My_m^2)))))
 # create dist object
 My_cosine_dist <- as.dist(My_cosine_dist) ## Important
-HClust_Ward_CosSim_SmallCorp2 <- hclust(My_cosine_dist, method="ward.D")
-plot(HClust_Ward_CosSim_SmallCorp2, cex=.7, hang=-30,main = "Cosine Sim")
-rect.hclust(HClust_Ward_CosSim_SmallCorp2, k=5)
-
-
-######## Have a look ..........................
-#plot(hc_D2)
-#plot(hc_D)
-#plot(hc_C)
-#plot(hc_CS)
-
-
+hclust_textClusters <- hclust(My_cosine_dist, method="ward.D")
+plot(hclust_textClusters)
+plot(hclust_textClusters, cex=.7, hang=-30,main = "Cosine Sim")
+output = rect.hclust(hclust_textClusters, k=3)
+l1 = paste(unlist(output[1]),collapse=",")
+l2 = paste(unlist(output[2]),collapse=",")
+l3 = paste(unlist(output[3]),collapse=",")
+list = c(l1,l2,l3)
+lapply(list, cat, "\n", file="hclusters.txt", append=TRUE)
 ```

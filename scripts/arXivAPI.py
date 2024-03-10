@@ -75,9 +75,9 @@ def main():
     #  datadf = basicArXivCall(subject, 'unsustainable')
     #  loadIntoFile(datadf, subject.replace('\"',''), 'unsustainable')
 
-    # joinLabeledData('Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy risk)2024-02-08.csv', 'risk',
-    #                 'Assignment1\\resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy safe)2024-02-08.csv', 'safe',
-    #                 'Assignment1\\resourceFiles\\corpus3(newsAPI)\\arXivDataLabeled(query=Nuclear Energy).csv')
+    # joinLabeledData('resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy risk)2024-02-08.csv', 'risk',
+    #                 'resourceFiles\\corpus2(arXiv)\\arXivData(query=nuclear energy safe)2024-02-08.csv', 'safe',
+    #                 'resourceFiles\\corpus3(newsAPI)\\arXivDataLabeled(query=Nuclear Energy).csv')
 
 if __name__ == "__main__":
     main()
