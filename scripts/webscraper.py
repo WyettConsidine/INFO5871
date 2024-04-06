@@ -73,36 +73,60 @@ def joinLabeledData(filePath1, l1, filePath2, l2, newFilePath,sources = None):
 def writeToFile(contList, subject):
     today = date.today()
     print(f"######{subject}######")
-    with open(f'./Assignment1/resourceFiles/corpus4(bs4)/webScraped(query={subject}){today}.csv', 'a') as f:
+    with open(f'./resourceFiles/corpus4(bs4)/webScraped(query={subject}){today}.csv', 'a') as f:
         for line in contList:
             f.write(f"{strip_ascii(line)}\n") 
     return 'Complete'
 
 
+def joinfiles(fileP1,fileP2,combFile,sourceRemove):
+    lSet= []
+    with open(fileP1, 'r') as f1:
+        for line in f1:
+            if sourceRemove[0] == True:
+                lineSep = line.split(',',2)
+                line = lineSep[0] + ',' + lineSep[2]
+            lSet.append(line)
+    with open(fileP2, 'r') as f1:
+        for line in f1:
+            if sourceRemove[1] == True:
+                lineSep = line.split(',',2)
+                line = lineSep[0] + ',' + lineSep[2]
+            lSet.append(line)
+    with open(combFile, 'w') as cf:
+        for line in lSet:
+            cf.write(line)
+    print("complete")
 
 def main():
-    print('WebScraping Start')
-    subject = '\"Nuclear Energy\" risk'
-    api_key, endpoint = newsAPI.getArticleURLsParams()
-    urls = newsAPI.getArticleURLs(api_key, endpoint, subject, retSources=True)
-    sources1 = [x[0] for x in urls]
-    urls = [x[1] for x in urls]   
-    cont = urlsToTxt(urls, 50)
-    writeToFile(cont, subject.replace('\"',''))
 
-    print('WebScraping Start')
-    subject = '\"Nuclear Energy\" safe'
-    api_key, endpoint = newsAPI.getArticleURLsParams()
-    urls = newsAPI.getArticleURLs(api_key, endpoint, subject, retSources=True)
-    sources2 = [x[0] for x in urls]
-    urls = [x[1] for x in urls]   
-    cont = urlsToTxt(urls, 50)
-    writeToFile(cont, subject.replace('\"',''))
+    fp1 = 'resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk cleaned.csv'
+    fp2 = 'resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk(appendSet) cleaned.csv'
+
+    joinfiles(fp1,fp2,'resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk-LargeSet.csv', [True,False])
+
+    # print('WebScraping Start')
+    # subject = '\"Nuclear Energy\" risk'
+    # api_key, endpoint = newsAPI.getArticleURLsParams()
+    # urls = newsAPI.getArticleURLs(api_key, endpoint, subject, retSources=True)
+    # sources1 = [x[0] for x in urls]
+    # urls = [x[1] for x in urls]   
+    # cont = urlsToTxt(urls, 50)
+    # writeToFile(cont, subject.replace('\"',''))
+
+    # print('WebScraping Start')
+    # subject = '\"Nuclear Energy\" safe'
+    # api_key, endpoint = newsAPI.getArticleURLsParams()
+    # urls = newsAPI.getArticleURLs(api_key, endpoint, subject, retSources=True)
+    # sources2 = [x[0] for x in urls]
+    # urls = [x[1] for x in urls]   
+    # cont = urlsToTxt(urls, 45)
+    # writeToFile(cont, subject.replace('\"',''))
 
     # print(cont)
-    joinLabeledData('resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy risk)2024-03-01.csv', 'risk',
-                    'resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy safe)2024-03-01.csv', 'safe',
-                     'resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk.csv', sources = [sources1,sources2])
+    joinLabeledData('resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy risk)2024-04-03.csv', 'risk',
+                    'resourceFiles\\corpus4(bs4)\\webScraped(query=Nuclear Energy safe)2024-04-03.csv', 'safe',
+                     'resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk(appendSet).csv')#, sources = [sources1,sources2])
     #content=urlToText('https://www.wired.com/story/global-emissions-could-peak-sooner-than-you-think/')
 
     #content2 = urlToText('https://www.androidcentral.com/phones/betavolt-technology-developing-radionuclide-battery')

@@ -12,7 +12,7 @@ def cleanEmptyLines(filePath):
     with open(filePath, 'r') as f:
         cleanedLines = []
         for line in f:
-            if line.split(",", 2)[2] == '\n':
+            if line.split(",", 1)[1] == '\n':
                 continue
             else:
                 cleanedLines.append(line)
@@ -26,9 +26,13 @@ def cleanEmptyLines(filePath):
 #Read in the target datafile, and apply TFIDF, cleaning, and vocabularity reductions
 def readInAndProcessText(filepath):
     print(f"Reading in {filepath}")
+    # tfidfDF, _ = textProcessor(filepath,   #apply textProcessing function. See textProcessing.py script file. 
+    #                                  textType='content', contentOrigin= 'scraped', stemORlem='neither', 
+    #                                  countORtfidf='tfidf', sources = False, labeled=True, maxFeatures=15, max_df = .8, min_df = .3)
+
     tfidfDF, _ = textProcessor(filepath,   #apply textProcessing function. See textProcessing.py script file. 
-                                     textType='content', contentOrigin= 'scraped', stemORlem='neither', 
-                                     countORtfidf='tfidf', sources = True, labeled=True, maxFeatures=15, max_df = .8, min_df = .3)
+                                    textType='content', contentOrigin= 'scraped', stemORlem='neither', 
+                                    countORtfidf='tfidf', sources = False, labeled=True, maxFeatures=18, max_df = .9, min_df = .2)
     print(f"From File: {tfidfDF}")
     return tfidfDF
 
@@ -134,10 +138,10 @@ def compareKMeansHClust(hclust, kmeans):
 
 def main():
     print("main")
-    #cleanEmptyLines('resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk.csv')
+    #cleanEmptyLines('resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk(appendSet).csv')
 
-    tfidfVects = readInAndProcessText('resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk cleaned.csv')
-    print(tfidfVects)
+    tfidfVects = readInAndProcessText('resourceFiles\\corpus4(bs4)\\webScrapedLabeledSources(query=Nuclear Energy)risk-LargeSet.csv')
+    print(tfidfVects.columns)
     #tfidfVects.to_csv('resourceFiles\\tfidfData.csv')
     # labelsASources, vectors = stripLabelandSource(tfidfVects)
     # lsClustered, centers = applyKMeans(vectors, labelsASources, 3)
