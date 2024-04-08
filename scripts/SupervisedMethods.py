@@ -60,13 +60,17 @@ def trainNB(noLabTrain, trainLabs, noLabTest):
 
 ###### Descision Tree Section ################
 #train a DT model. Fit with training data, and return predicted labels
+#max_depth 3 : 49.1
+#no max depth: 46.1
+#max depth = 5: 46.7
+#
 def trainDT(noLabTrain, trainLabs, noLabTest):
     #instatiate a DT object with input parameters
-    DT=DecisionTreeClassifier(criterion='entropy',
+    DT=DecisionTreeClassifier(criterion='gini',
                             splitter='best',
-                            max_depth=None, 
-                            min_samples_split=2, 
-                            min_samples_leaf=1, 
+                            max_depth=3, 
+                            min_samples_split=4, 
+                            min_samples_leaf=4, 
                             min_weight_fraction_leaf=0.0, 
                             max_features=None, 
                             random_state=None, 
@@ -88,7 +92,7 @@ def dispTree(DT, tfidf, figName, saveImg = False):
                     #The following creates TrainDF.columns for each
                     #which are the feature names.
                       feature_names=tfidf.columns,  
-                      #class_names=MyDT.class_names,  
+                      class_names=['safe','risk'],  
                       filled=True, rounded=True,  
                       special_characters=True)
     #Use graphviz to plot the tree object                             
@@ -106,7 +110,7 @@ def dispTree(DT, tfidf, figName, saveImg = False):
 #create and train SVM. Use to predict test labels
 def trainSVM(noLabTrain, trainLabs, noLabTest):
     #create SVM model with soft margins, cost = C
-    clf = SVC(C=1, kernel="poly", degree = 2, verbose=False)
+    clf = SVC(C=3, kernel="poly", degree = 3, verbose=False)
     #fit the model with the training data
     clf.fit(noLabTrain, trainLabs)
     #predict the test labels
@@ -132,13 +136,21 @@ def getAvgAcc(tfidf, trainingFunc, tests = 20):
     return sumAcc/tests
 
 
-
+#Create a confusion matrix diagram. 
+#input the data, the model name, and the model type
+#If tests set to > 1, the model will average the confusion matrix entries
+# over that number of tests. Not standard practice, but interesting to see.
+#
 def displayConfMat(tfidf, modelName, trainingFunction, tests = 1):
     accSum = 0
     for i in range(tests):
+        #Split data into train/test labels/nonlabeled
         noLabTrain, LabTrain, noLabTest, LabTest = splitData(tfidf)
+        #apply the data to the input training function.
         model, preds = trainingFunction(noLabTrain, LabTrain, noLabTest)
+        #Using the true labels, and model predictions, make a confusion mat
         cm = confusion_matrix(LabTest, preds, labels= model.classes_)
+        #If clause used in averaging across multiple tests
         if i == 0:
             cmSum = cm
         else:
@@ -146,40 +158,97 @@ def displayConfMat(tfidf, modelName, trainingFunction, tests = 1):
         accSum += accuracy_score(LabTest,preds)
     acc = accSum/tests
     cm = cmSum/tests
+    #Use the ConfusionMatrixDisplay to load a visual
     disp = ConfusionMatrixDisplay(confusion_matrix=cm,
                                 display_labels=model.classes_)
     disp.plot()
+    #adjust title
     plt.title(f'Confusion Matrix of {modelName} Model \n Accuracy = {np.round(acc,2)}')
+    #plot graphic
     plt.show()
 
+#compare each supervised learning model averaged over a number of tests using AUC
+#input the model names, the corresponding training functions, the raw data,
+# and the number of tests to average over. 
+# Over each test, split the data, and train each model on it. 
+#For each model, predict the labels, calculate ROC and AUC,
+# then add to the running totals. 
+#At the end, average across the number of tests.
 def compareSupLearnMods(modNames, trainingFunctions, tfidf, numTests = 20):
-    predTrueLabLists = []
-    for model in trainingFunctions:
-        noLabTrain, LabTrain, noLabTest, LabTest = splitData(tfidf)
-        _, preds = model(noLabTrain, LabTrain, noLabTest)
-        predTrueLabLists.append([LabTest.values, preds])
+    #instantiate the running sum list
     aucList = []
+    #dictionary for propper formatting
     labelDict = {'safe':1,'risk':0}
+    #for each test
     for t in range(numTests):
+        predTrueLabLists = []
+        #Train the models on a test/training split.
+        for model in trainingFunctions:
+            #split data into test/train label/non-labled
+            noLabTrain, LabTrain, noLabTest, LabTest = splitData(tfidf)
+            #predict and record test labels.
+            _, preds = model(noLabTrain, LabTrain, noLabTest)
+            predTrueLabLists.append([LabTest.values, preds])
+        #For each model,
         for i in range(len(modNames)):
-            #print(predTrueLabLists[i][0],predTrueLabLists[i][1])
+            #retrieve test labels, and use dictionary for propper formatting
             y = [labelDict[l] for l in predTrueLabLists[i][0]]
             pred = [labelDict[l] for l in predTrueLabLists[i][1]]
+            #Calculate ROC
             fpr, tpr, thresholds = roc_curve(y,pred)
-            #print(auc(fpr, tpr))
-            if t == 0:
+            if t == 0:  #If it is the first test, just populate the running sum list.
                 aucList.append((modNames[i], auc(fpr, tpr)))
             else:
-                #print(aucList[i])
+                #Add the AUC to the running total for that model across the tests
                 aucList[i] = (aucList[i][0], aucList[i][1] + auc(fpr, tpr))
+    #normalize by number of tests
     aucList = [(aucVal[0],aucVal[1]/t) for aucVal in aucList]
+    #sort the AUC results
     aucList.sort(key = lambda x: x[1],reverse = True)
     return aucList
+
+
+
+#Code modified from SKLearn Documentaion Example code:
+#https://scikit-learn.org/0.17/auto_examples/svm/plot_iris.html
+def plotSVM(tfidf):
+    X = tfidf[['nuclear','year']].values
+    print(X)
+    numDict = {'safe':1,'risk':0}
+    y = [numDict[x] for x in tfidf['Label'].values]
+    h = .02
+    rbf_svc = SVC(kernel='rbf', degree=2, C=1).fit(X,y)
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                        np.arange(y_min, y_max, h))
+    Z = rbf_svc.predict(np.c_[xx.ravel(), yy.ravel()])
+
+    # Put the result into a color plot
+    Z = Z.reshape(xx.shape)
+    plt.contourf(xx, yy, Z, cmap=plt.cm.Paired, alpha=0.8)
+
+    # Plot also the training points
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Paired,edgecolors='black')
+    plt.xlabel('Term "nuclear" Frequncy')
+    plt.ylabel('Term "year" Frequncy')
+    plt.xlim(xx.min(), xx.max())
+    plt.ylim(yy.min(), yy.max())
+    plt.xticks(())
+    plt.yticks(())
+    plt.title('SVC with RBF kernel')
+
+    plt.show()
+
+
 
 if __name__ == '__main__' :
     tfidf = grabData('resourceFiles/tfidfData.csv')
     
     #os.environ["PATH"] += os.pathsep + 'C:\\Users\\wyett\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python311\\site-packages\\graphviz'
+
+    #print(tfidf.shape)
+    #print(getAvgAcc(tfidf,trainDT,100))
 
     #NB model
     #displayConfMat(tfidf, 'Naive Bayes', trainNB)
@@ -187,21 +256,25 @@ if __name__ == '__main__' :
     #DT Models:
     #displayConfMat(tfidf, 'Desicion Tree', trainDT)
 
-    ###Run only on WSL!!
+    # ###Run only on WSL!!
     # noLabTrain, LabTrain, noLabTest, LabTest = splitData(tfidf)
     # DT, preds = trainDT(noLabTrain, LabTrain, noLabTest)
-    # dispTree(DT, noLabTrain, 'Descition Tree Model')
+    # print(getAvgAcc(tfidf,trainDT,100))
+    # dispTree(DT, noLabTrain, 'Decision Tree Model')
 
-    #SVM Models:
+    ##SVM Models:
     #displayConfMat(tfidf, "Support Vector Machine", trainSVM)
 
-    #AUC:
+    ### AUC:
     modelNames = ['Naive Bayes', 'Desicion Tree', 'Support Vector Machine']
     trainingFunctions = [trainNB,trainDT,trainSVM]
     results= compareSupLearnMods(modelNames,trainingFunctions, tfidf)
     print('AUC comparison across all supervised learning models:')
     for result in results:
         print(f'Model: {result[0]}. AUC Score: {result[1]}')
+
+    #plot SVM
+    #plotSVM(tfidf)
 
 
 
