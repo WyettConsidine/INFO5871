@@ -266,12 +266,12 @@ if __name__ == '__main__' :
     #displayConfMat(tfidf, "Support Vector Machine", trainSVM)
 
     ### AUC:
-    modelNames = ['Naive Bayes', 'Desicion Tree', 'Support Vector Machine']
-    trainingFunctions = [trainNB,trainDT,trainSVM]
-    results= compareSupLearnMods(modelNames,trainingFunctions, tfidf)
-    print('AUC comparison across all supervised learning models:')
-    for result in results:
-        print(f'Model: {result[0]}. AUC Score: {result[1]}')
+    # modelNames = ['Naive Bayes', 'Desicion Tree', 'Support Vector Machine']
+    # trainingFunctions = [trainNB,trainDT,trainSVM]
+    # results= compareSupLearnMods(modelNames,trainingFunctions, tfidf)
+    # print('AUC comparison across all supervised learning models:')
+    # for result in results:
+    #     print(f'Model: {result[0]}. AUC Score: {result[1]}')
 
     #plot SVM
     #plotSVM(tfidf)
